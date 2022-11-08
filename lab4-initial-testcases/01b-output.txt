@@ -1,0 +1,8 @@
+FCFS
+Process    |  A  |  B  |  C  |  D  |  E  |
+Arrival    |  0  |  2  |  4  |  6  |  8  |
+Service    |  3  |  6  |  4  |  5  |  2  | Mean|
+Finish     |  3  |  9  | 13  | 18  | 20  |-----|
+Turnaround |  3  |  7  |  9  | 12  | 12  | 8.60|
+NormTurn   | 1.00| 1.17| 2.25| 2.40| 6.00| 2.56|
+

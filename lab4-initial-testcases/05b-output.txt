@@ -1,0 +1,8 @@
+SRT
+Process    |  A  |  B  |  C  |  D  |  E  |
+Arrival    |  0  |  2  |  4  |  6  |  8  |
+Service    |  3  |  6  |  4  |  5  |  2  | Mean|
+Finish     |  3  | 15  |  8  | 20  | 10  |-----|
+Turnaround |  3  | 13  |  4  | 14  |  2  | 7.20|
+NormTurn   | 1.00| 2.17| 1.00| 2.80| 1.00| 1.59|
+
