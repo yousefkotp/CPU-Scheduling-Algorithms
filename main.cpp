@@ -7,13 +7,38 @@ using namespace std;
 const string TRACE = "trace";
 const string SHOW_STATISTICS = "stats";
 const string ALGORITHMS[8] = {"","FCFS","RR","SPN","SRT","HRRN","FB-1","FB-2i"};
+
+bool sortByServiceTime(const tuple<string, int, int>& a,const tuple<string, int, int>& b){
+    return (get<2>(a) < get<2>(b));
+}
+bool sortByArrivalTime(const tuple<string, int, int>& a,const tuple<string, int, int>& b){
+    return (get<1>(a) < get<1>(b));
+}
+
+string getProcessName(tuple<string, int, int>& a){
+    return get<0>(a);
+}
+
+int getArrivalTime(tuple<string, int, int>& a){
+    return get<1>(a);
+}
+
+int getServiceTime(tuple<string, int, int>& a){
+    return get<2>(a);
+}
+
 void firstComeFirstServe(){
-    int time=get<1>(processes[0]);
+    sort(processes.begin(),processes.end(),sortByArrivalTime);
+    int time=getArrivalTime(processes[0]);
     for(int i=0;i<processes.size();i++){
-        finishTime.push_back(time+get<2>(processes[i]));
-        turnAroundTime.push_back(finishTime[i]-get<1>(processes[i]));
-        normTurn.push_back(turnAroundTime[i]*1.0/get<2>(processes[i]));
-        time+=get<2>(processes[i]);
+
+        int arrivalTime = getArrivalTime(processes[i]);
+        int serviceTime = getServiceTime(processes[i]);
+
+        finishTime.push_back(time+serviceTime);
+        turnAroundTime.push_back(finishTime[i]-arrivalTime);
+        normTurn.push_back(turnAroundTime[i]*1.0/serviceTime);
+        time+=serviceTime;
     }
 }
 
