@@ -43,7 +43,8 @@ void firstComeFirstServe(){
 
         for(int j = time;j<finishTime[processIndex];j++)
             timeline[j][processIndex]='*';
-
+        for(int j=arrivalTime;j<time;j++)
+            timeline[j][processIndex]='.';
         time+=serviceTime;
     }
     processes= defaultProcesses;
