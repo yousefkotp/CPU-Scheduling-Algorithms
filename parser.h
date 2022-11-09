@@ -14,6 +14,7 @@ int last_instant, process_count;
 vector<string> algorithms;
 vector<tuple<string,int,int>> processes;
 vector<tuple<string,int,int>> defaultProcesses;
+vector<vector<char>>timeline;
 unordered_map<string,int>processToIndex;
 
 
@@ -52,6 +53,10 @@ void parse()
     finishTime.resize(process_count);
     turnAroundTime.resize(process_count);
     normTurn.resize(process_count);
+
+    for(int i=0;i<last_instant;i++)
+        for(int j=0;j<process_count;j++)
+            timeline.push_back(' ');
 }
 
 
