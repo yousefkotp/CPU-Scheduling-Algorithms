@@ -8,12 +8,12 @@ const string TRACE = "trace";
 const string SHOW_STATISTICS = "stats";
 const string ALGORITHMS[8] = {"","FCFS","RR","SPN","SRT","HRRN","FB-1","FB-2i"};
 void firstComeFirstServe(){
-    int time=arrivalTime[0];
+    int time=get<1>(processes[0]);
     for(int i=0;i<processes.size();i++){
-        finishTime.push_back(time+serviceTime[i]);
-        turnAroundTime.push_back(finishTime[i]-arrivalTime[i]);
-        normTurn.push_back(turnAroundTime[i]*1.0/serviceTime[i]);
-        time+=serviceTime[i];
+        finishTime.push_back(time+get<2>(processes[i]));
+        turnAroundTime.push_back(finishTime[i]-get<1>(processes[i]));
+        normTurn.push_back(turnAroundTime[i]*1.0/get<2>(processes[i]));
+        time+=get<2>(processes[i]);
     }
 }
 
@@ -48,20 +48,20 @@ void printAlgorithm(){
 void printProcesses(){
     cout<<"Process\t\t";
     for(int i=0;i<processes.size();i++)
-        cout<<"| "<<processes[i]<<" ";
+        cout<<"| "<<get<0>(processes[i])<<" ";
     cout<<"|"<<endl;
 }
 void printArrivalTime(){
     cout<<"Arrival\t\t";
-    for(int i=0;i<arrivalTime.size();i++)
-        cout<<"| "<<arrivalTime[i]<<" ";
+    for(int i=0;i<processes.size();i++)
+        cout<<"| "<<get<1>(processes[i])<<" ";
 
     cout<<"|"<<endl;
 }
 void printServiceTime(){
     cout<<"Service\t\t";
-    for(int i=0;i<serviceTime.size();i++)
-        cout<<"| "<<serviceTime[i]<<" ";
+    for(int i=0;i<processes.size();i++)
+        cout<<"| "<<get<2>(processes[i])<<" ";
     cout<<"| Mean|"<<endl;
 }
 void printFinishTime(){
@@ -94,6 +94,7 @@ void printNormTurn(){
 }
 void printStats(){
     printAlgorithm();
+    printProcesses();
     printArrivalTime();
     printServiceTime();
     printFinishTime();

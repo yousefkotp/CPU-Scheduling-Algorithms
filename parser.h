@@ -12,9 +12,8 @@ using namespace std;
 string operation;
 int last_instant, process_count;
 vector<string> algorithms;
-vector<char> processes;
-vector<int>arrivalTime;
-vector<int>serviceTime;
+vector<tuple<string,int,int>> processes;
+unordered_map<string,int>processToIndex;
 
 
 //Results
@@ -41,12 +40,11 @@ void parse()
     cin >> operation >> algorithmChunk >> last_instant >> process_count;
     for(int i=0; i<process_count; i++)
     {
-        char p;
+        string p;
         int arrival,service;
         cin >> p >> arrival >> service;
-        processes.push_back(p);
-        arrivalTime.push_back(arrival);
-        serviceTime.push_back(service);
+        processes.push_back(make_tuple(p,arrival,service));
+        processToIndex[p]=i;
     }
     parse_algorithms(algorithmChunk);
 }
