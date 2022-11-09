@@ -53,10 +53,14 @@ void parse()
     finishTime.resize(process_count);
     turnAroundTime.resize(process_count);
     normTurn.resize(process_count);
-
+    timeline.resize(last_instant);
     for(int i=0;i<last_instant;i++)
         for(int j=0;j<process_count;j++)
-            timeline.push_back(' ');
+            timeline[i].push_back(' ');
+    for(int i=0;i<last_instant;i++)
+        for(int j=0;j<process_count;j++)
+            cout<<timeline[i][j]<<" ";
+
 }
 
 

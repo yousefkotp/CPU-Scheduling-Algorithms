@@ -80,33 +80,33 @@ void printAlgorithm(){
 
 void printProcesses(){
     cout<<"Process\t\t";
-    for(int i=0;i<processes.size();i++)
+    for(int i=0;i<process_count;i++)
         cout<<"| "<<get<0>(processes[i])<<" ";
     cout<<"|"<<endl;
 }
 void printArrivalTime(){
     cout<<"Arrival\t\t";
-    for(int i=0;i<processes.size();i++)
+    for(int i=0;i<process_count;i++)
         cout<<"| "<<get<1>(processes[i])<<" ";
 
     cout<<"|"<<endl;
 }
 void printServiceTime(){
     cout<<"Service\t\t";
-    for(int i=0;i<processes.size();i++)
+    for(int i=0;i<process_count;i++)
         cout<<"| "<<get<2>(processes[i])<<" ";
     cout<<"| Mean|"<<endl;
 }
 void printFinishTime(){
     cout<<"Finish\t\t";
-    for(int i=0;i<finishTime.size();i++)
+    for(int i=0;i<process_count;i++)
         cout<<"| "<<finishTime[i]<<" ";
     cout<<"|-----|"<<endl;
 }
 void printTurnAroundTime(){
     cout<<"Turnaround\t";
     int sum =0;
-    for(int i=0;i<turnAroundTime.size();i++){
+    for(int i=0;i<process_count;i++){
         cout<<"| "<<turnAroundTime[i]<<" ";
         sum+=turnAroundTime[i];
     }
@@ -118,7 +118,7 @@ void printNormTurn(){
     cout<<"NormTurn\t";
     cout<<fixed<<setprecision(2);
     float sum =0;
-    for(int i=0;i<normTurn.size();i++){
+    for(int i=0;i<process_count;i++){
         cout<<"| "<<normTurn[i]<<" ";
         sum+=normTurn[i];
     }
@@ -136,10 +136,18 @@ void printStats(){
 }
 
 void printTimeline(){
-
-
+    cout<<ALGORITHMS[stoi(algorithms[0])]<<" ";
+    for(int i=0;i<=last_instant;i++)
+        cout<<" "<<i%10<<" ";
+    cout<<endl;
     cout<<"------------------------------------------------"<<endl;
-
+    for(int i=0;i<process_count;i++){
+        cout<<getProcessName(processes[i])<<"\t";
+        for(int j=0;j<last_instant;j++){
+            cout<<"|"<<timeline[j][i];
+        }
+        cout<<"|"<<endl;
+    }
 
     cout<<"------------------------------------------------"<<endl;
 }
@@ -147,8 +155,8 @@ void printTimeline(){
 int main()
 {
     parse();
-    shortestProcessNext();
-    printStats();
+    firstComeFirstServe();
+    printTimeline();
     return 0;
 }
 
