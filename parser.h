@@ -13,6 +13,7 @@ string operation;
 int last_instant, process_count;
 vector<string> algorithms;
 vector<tuple<string,int,int>> processes;
+vector<tuple<string,int,int>> defaultProcesses;
 unordered_map<string,int>processToIndex;
 
 
@@ -44,6 +45,7 @@ void parse()
         int arrival,service;
         cin >> p >> arrival >> service;
         processes.push_back(make_tuple(p,arrival,service));
+        defaultProcesses.push_back(make_tuple(p,arrival,service));
         processToIndex[p]=i;
     }
     parse_algorithms(algorithmChunk);
