@@ -12,7 +12,16 @@ using namespace std;
 string operation;
 int last_instant, process_count;
 vector<string> algorithms;
-unordered_map<char, pair<int, int>> processes;
+vector<char> processes;
+vector<int>arrivalTime;
+vector<int>serviceTime;
+
+
+//Results
+
+vector<int>finishTime;
+vector<int>turnAroundTime;
+vector<float>normTurn;
 
 
 void parse_algorithms(string algorithmChunk)
@@ -33,7 +42,11 @@ void parse()
     for(int i=0; i<process_count; i++)
     {
         char p;
-        cin >> p >> processes[p].first >> processes[p].second;
+        int arrival,service;
+        cin >> p >> arrival >> service;
+        processes.push_back(p);
+        arrivalTime.push_back(arrival);
+        serviceTime.push_back(service);
     }
     parse_algorithms(algorithmChunk);
 }
