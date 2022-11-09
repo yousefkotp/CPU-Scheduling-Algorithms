@@ -30,14 +30,16 @@ int getServiceTime(tuple<string, int, int>& a){
 void firstComeFirstServe(){
     sort(processes.begin(),processes.end(),sortByArrivalTime);
     int time=getArrivalTime(processes[0]);
-    for(int i=0;i<processes.size();i++){
 
+    for(int i=0;i<processes.size();i++){
+        string processName = getProcessName(processes[i]);
+        int processIndex = processToIndex[processName];
         int arrivalTime = getArrivalTime(processes[i]);
         int serviceTime = getServiceTime(processes[i]);
 
-        finishTime.push_back(time+serviceTime);
-        turnAroundTime.push_back(finishTime[i]-arrivalTime);
-        normTurn.push_back(turnAroundTime[i]*1.0/serviceTime);
+        finishTime[processIndex]= (time+serviceTime);
+        turnAroundTime[processIndex]= (finishTime[processIndex]-arrivalTime);
+        normTurn[processIndex]= (turnAroundTime[processIndex]*1.0/serviceTime);
         time+=serviceTime;
     }
 }

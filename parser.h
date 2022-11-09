@@ -47,6 +47,9 @@ void parse()
         processToIndex[p]=i;
     }
     parse_algorithms(algorithmChunk);
+    finishTime.resize(process_count);
+    turnAroundTime.resize(process_count);
+    normTurn.resize(process_count);
 }
 
 
