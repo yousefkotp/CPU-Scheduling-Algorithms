@@ -28,9 +28,7 @@ int getServiceTime(tuple<string, int, int>& a){
 }
 
 void firstComeFirstServe(){
-    sort(processes.begin(),processes.end(),sortByArrivalTime);
     int time=getArrivalTime(processes[0]);
-
     for(int i=0;i<processes.size();i++){
         string processName = getProcessName(processes[i]);
         int processIndex = processToIndex[processName];
@@ -47,7 +45,6 @@ void firstComeFirstServe(){
             timeline[j][processIndex]='.';
         time+=serviceTime;
     }
-    processes= defaultProcesses;
 }
 
 void roundRobin(){
