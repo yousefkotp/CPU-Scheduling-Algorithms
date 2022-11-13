@@ -81,7 +81,6 @@ void shortestProcessNext(){
             turnAroundTime[processIndex]= (finishTime[processIndex]-arrivalTime);
             normTurn[processIndex]= (turnAroundTime[processIndex]*1.0/serviceTime);
             i =temp-1;
-            cout<<i+1<<endl;
         }
     }
 }
@@ -109,20 +108,20 @@ void printAlgorithm(){
 void printProcesses(){
     cout<<"Process\t\t";
     for(int i=0;i<process_count;i++)
-        cout<<"| "<<get<0>(processes[i])<<" ";
+        cout<<"| "<<getProcessName(processes[i])<<" ";
     cout<<"|"<<endl;
 }
 void printArrivalTime(){
     cout<<"Arrival\t\t";
     for(int i=0;i<process_count;i++)
-        cout<<"| "<<get<1>(processes[i])<<" ";
+        cout<<"| "<<getArrivalTime(processes[i])<<" ";
 
     cout<<"|"<<endl;
 }
 void printServiceTime(){
     cout<<"Service\t\t";
     for(int i=0;i<process_count;i++)
-        cout<<"| "<<get<2>(processes[i])<<" ";
+        cout<<"| "<<getServiceTime(processes[i])<<" ";
     cout<<"| Mean|"<<endl;
 }
 void printFinishTime(){
@@ -184,7 +183,7 @@ int main()
 {
     parse();
     shortestProcessNext();
-    printTimeline();
+    printStats();
     return 0;
 }
 
