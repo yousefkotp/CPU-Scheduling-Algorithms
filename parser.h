@@ -55,10 +55,6 @@ void parse()
     for(int i=0;i<last_instant;i++)
         for(int j=0;j<process_count;j++)
             timeline[i].push_back(' ');
-    for(int i=0;i<last_instant;i++)
-        for(int j=0;j<process_count;j++)
-            cout<<timeline[i][j]<<" ";
-
 }
 
 
