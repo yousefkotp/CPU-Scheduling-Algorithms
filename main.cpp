@@ -154,6 +154,13 @@ int main()
     parse();
     firstComeFirstServe();
     printTimeline();
+
+    queue<int>q;
+    q.push(4);
+    int top = q.front();
+    q.pop();
+
+
     return 0;
 }
 
