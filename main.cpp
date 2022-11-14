@@ -26,6 +26,9 @@ int getArrivalTime(tuple<string, int, int>& a){
 int getServiceTime(tuple<string, int, int>& a){
     return get<2>(a);
 }
+void decrementServiceTime(tuple<string, int, int>& a){
+    get<2>(a) = get<2>(a)-1;
+}
 
 void firstComeFirstServe(){
     int time=getArrivalTime(processes[0]);
@@ -86,7 +89,41 @@ void shortestProcessNext(){
 }
 
 void shortestRemainingTime(){
+    priority_queue<pair<int,string>,vector<pair<int,string>>,greater<pair<int,string>>>pq;
+    int j=0;
+    for(int i=0;i<last_instant;i++){
+        for(;j<process_count;){
+            if(getArrivalTime(processes[j])==i){
+                pq.push(make_pair(getServiceTime(processes[j]),getProcessName(processes[j])));
+                j++;
+            }else
+                break;
+        }
+        if(!pq.empty()){
+            string processName= pq.top().second;
+            int remainingTime = pq.top().first;
+            pq.pop();
+            int processIndex = processToIndex[processName];
+            int serviceTime = getServiceTime(processes[processIndex]);
+            int arrivalTime= getArrivalTime(processes[processIndex]);
+            timeline[i][processIndex]= '*';
+            if(remainingTime==1){// process finished
+                finishTime[processIndex]= i+1;
+                turnAroundTime[processIndex]= (finishTime[processIndex]-arrivalTime);
+                normTurn[processIndex]= (turnAroundTime[processIndex]*1.0/serviceTime);
+            }else{
+                pq.push(make_pair(remainingTime-1,processName));
+            }
+        }
+    }
 
+    for(int i=0;i<process_count;i++){
+        int arrivalTime = getArrivalTime(processes[i]);
+        for(int k=arrivalTime;k<finishTime[i];k++){
+            if(timeline[k][i]!='*')
+                timeline[k][i]='.';
+        }
+    }
 }
 
 void highestResponseRatioNext(){
@@ -181,8 +218,9 @@ void printTimeline(){
 
 int main()
 {
+    freopen("input.txt","r",stdin);
     parse();
-    shortestProcessNext();
+    shortestRemainingTime();
     printStats();
     return 0;
 }
