@@ -143,32 +143,32 @@ void printAlgorithm(){
 }
 
 void printProcesses(){
-    cout<<"Process\t\t";
+    cout<<"Process    ";
     for(int i=0;i<process_count;i++)
         cout<<"| "<<getProcessName(processes[i])<<" ";
     cout<<"|"<<endl;
 }
 void printArrivalTime(){
-    cout<<"Arrival\t\t";
+    cout<<"Arrival    ";
     for(int i=0;i<process_count;i++)
         cout<<"| "<<getArrivalTime(processes[i])<<" ";
 
     cout<<"|"<<endl;
 }
 void printServiceTime(){
-    cout<<"Service\t\t";
+    cout<<"Service    ";
     for(int i=0;i<process_count;i++)
         cout<<"| "<<getServiceTime(processes[i])<<" ";
     cout<<"| Mean|"<<endl;
 }
 void printFinishTime(){
-    cout<<"Finish\t\t";
+    cout<<"Finish     ";
     for(int i=0;i<process_count;i++)
         cout<<"| "<<finishTime[i]<<" ";
     cout<<"|-----|"<<endl;
 }
 void printTurnAroundTime(){
-    cout<<"Turnaround\t";
+    cout<<"Turnaround ";
     int sum =0;
     for(int i=0;i<process_count;i++){
         cout<<"| "<<turnAroundTime[i]<<" ";
@@ -179,7 +179,7 @@ void printTurnAroundTime(){
 }
 
 void printNormTurn(){
-    cout<<"NormTurn\t";
+    cout<<"NormTurn   ";
     cout<<fixed<<setprecision(2);
     float sum =0;
     for(int i=0;i<process_count;i++){
