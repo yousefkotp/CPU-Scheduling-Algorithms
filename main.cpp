@@ -55,19 +55,18 @@ void roundRobin(){
 }
 
 void shortestProcessNext(){
-    priority_queue<pair<int,string>,vector<pair<int,string>>,greater<pair<int,string>>>pq;
+    priority_queue<pair<int,int>,vector<pair<int,int>>,greater<pair<int,int>>>pq; //pair of service time and index
     int j=0;
     for(int i=0;i<last_instant;i++){
         for(;j<process_count;){
             if(getArrivalTime(processes[j])<=i){
-                pq.push(make_pair(getServiceTime(processes[j]),getProcessName(processes[j])));
+                pq.push(make_pair(getServiceTime(processes[j]),j));
                 j++;
             }else
                 break;
         }
         if(!pq.empty()){
-            string processName = pq.top().second;
-            int processIndex = processToIndex[processName];
+            int processIndex = pq.top().second;
             int arrivalTime = getArrivalTime(processes[processIndex]);
             int serviceTime = getServiceTime(processes[processIndex]);
             pq.pop();
@@ -89,30 +88,30 @@ void shortestProcessNext(){
 }
 
 void shortestRemainingTime(){
-    priority_queue<pair<int,string>,vector<pair<int,string>>,greater<pair<int,string>>>pq;
+    priority_queue<pair<int,int>,vector<pair<int,int>>,greater<pair<int,int>>>pq;
     int j=0;
     for(int i=0;i<last_instant;i++){
         for(;j<process_count;){
             if(getArrivalTime(processes[j])==i){
-                pq.push(make_pair(getServiceTime(processes[j]),getProcessName(processes[j])));
+                pq.push(make_pair(getServiceTime(processes[j]),j));
                 j++;
             }else
                 break;
         }
         if(!pq.empty()){
-            string processName= pq.top().second;
+            int processIndex = pq.top().second;
             int remainingTime = pq.top().first;
             pq.pop();
-            int processIndex = processToIndex[processName];
             int serviceTime = getServiceTime(processes[processIndex]);
             int arrivalTime= getArrivalTime(processes[processIndex]);
             timeline[i][processIndex]= '*';
+
             if(remainingTime==1){// process finished
                 finishTime[processIndex]= i+1;
                 turnAroundTime[processIndex]= (finishTime[processIndex]-arrivalTime);
                 normTurn[processIndex]= (turnAroundTime[processIndex]*1.0/serviceTime);
             }else{
-                pq.push(make_pair(remainingTime-1,processName));
+                pq.push(make_pair(remainingTime-1,processIndex));
             }
         }
     }
