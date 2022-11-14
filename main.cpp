@@ -55,21 +55,21 @@ void roundRobin(){
 }
 
 void shortestProcessNext(){
-    priority_queue<pair<int,tuple<string,int,int>>>pq;
-    unordered_map<int,bool>done;
+    priority_queue<pair<int,string>,vector<pair<int,string>>,greater<pair<int,string>>>pq;
+    int j=0;
     for(int i=0;i<last_instant;i++){
-        for(int j=0;j<process_count;j++){
-            if(getArrivalTime(processes[j])<=i && !done[j]){
-                pq.push(make_pair(-getServiceTime(processes[j]),processes[j]));
-                done[j] = true;
-            }
+        for(;j<process_count;){
+            if(getArrivalTime(processes[j])<=i){
+                pq.push(make_pair(getServiceTime(processes[j]),getProcessName(processes[j])));
+                j++;
+            }else
+                break;
         }
         if(!pq.empty()){
-            tuple<string,int,int>process= pq.top().second;
-            string processName = getProcessName(process);
-            int arrivalTime = getArrivalTime(process);
-            int serviceTime = getServiceTime(process);
+            string processName = pq.top().second;
             int processIndex = processToIndex[processName];
+            int arrivalTime = getArrivalTime(processes[processIndex]);
+            int serviceTime = getServiceTime(processes[processIndex]);
             pq.pop();
 
             int temp = arrivalTime;
@@ -220,8 +220,8 @@ int main()
 {
     freopen("input.txt","r",stdin);
     parse();
-    shortestRemainingTime();
-    printStats();
+    shortestProcessNext();
+    printTimeline();
     return 0;
 }
 
