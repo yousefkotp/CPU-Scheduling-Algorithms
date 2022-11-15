@@ -76,8 +76,9 @@ void firstComeFirstServe()
     }
 }
 
-void roundRobin()
-{
+void roundRobin(){
+    int originalQuantum = stoi(algorithms[1]);
+
 }
 
 void shortestProcessNext()
@@ -306,14 +307,14 @@ void printStats()
 
 void printTimeline()
 {
-    cout << ALGORITHMS[stoi(algorithms[0])] << "   ";
+    cout << ALGORITHMS[stoi(algorithms[0])] << " ";
     for (int i = 0; i <= last_instant; i++)
-        cout << i % 10<<" ";
+        cout << " " << i % 10;
     cout << endl;
     cout << "------------------------------------------------" << endl;
     for (int i = 0; i < process_count; i++)
     {
-        cout << getProcessName(processes[i]) << "     ";
+        cout << getProcessName(processes[i]) << "\t\b\b";
         for (int j = 0; j < last_instant; j++)
         {
             cout << "|" << timeline[j][i];
@@ -327,14 +328,9 @@ void printTimeline()
 int main()
 {
     freopen("input.txt","r",stdin);
-    freopen("output.txt","w",stdout);
     parse();
 
-    // shortestProcessNext();
-    // firstComeFirstServe();
-
-    shortestProcessNext();
-
+    roundRobin();
     if(operation == TRACE)
         printTimeline();
     else if(operation == SHOW_STATISTICS)

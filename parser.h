@@ -30,7 +30,7 @@ void parse_algorithms(string algorithm_chunk)
     while (stream.good())
     {
         string temp_str;
-        getline(stream, temp_str, ',');
+        getline(stream, temp_str, '-');
         algorithms.push_back(temp_str);
     }
 }
