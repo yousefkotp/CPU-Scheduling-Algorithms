@@ -185,7 +185,7 @@ void highestResponseRatioNext()
             if( getArrivalTime(proc) == current_instant )
                 present_processes.push_back( make_tuple(getProcessName(proc), 1.0, 0) );
         }
-        
+
         // Calculate response ratio for every process
         for(auto &proc : present_processes)
         {
@@ -217,6 +217,9 @@ void highestResponseRatioNext()
             {
                 swap(present_processes[0], present_processes[present_processes.size() - 1]);
                 present_processes.pop_back();
+                finishTime[process_index] = current_instant + 1;
+                turnAroundTime[process_index] = finishTime[process_index] - getArrivalTime(processes[process_index]);
+                normTurn[process_index] = (turnAroundTime[process_index] * 1.0 / getServiceTime(processes[process_index]));
             }
         }
     }
@@ -305,12 +308,12 @@ void printTimeline()
 {
     cout << ALGORITHMS[stoi(algorithms[0])] << " ";
     for (int i = 0; i <= last_instant; i++)
-        cout << " " << i % 10 << " ";
+        cout << " " << i % 10;
     cout << endl;
     cout << "------------------------------------------------" << endl;
     for (int i = 0; i < process_count; i++)
     {
-        cout << getProcessName(processes[i]) << "\t";
+        cout << getProcessName(processes[i]) << "\t\b\b";
         for (int j = 0; j < last_instant; j++)
         {
             cout << "|" << timeline[j][i];
@@ -326,20 +329,14 @@ int main()
     // freopen("input.txt","r",stdin);
     parse();
 
-    /*
-    cout << endl;
-    printAlgorithm();
-    printProcesses();
-    printArrivalTime();
-    printServiceTime();
-    cout << endl;
-    */
-
     // shortestProcessNext();
     // firstComeFirstServe();
 
     highestResponseRatioNext();
 
-    printTimeline();
+    if(operation == TRACE)
+        printTimeline();
+    else if(operation == SHOW_STATISTICS)
+        printStats();
     return 0;
 }
