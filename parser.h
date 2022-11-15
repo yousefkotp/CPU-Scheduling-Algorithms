@@ -11,7 +11,7 @@ using namespace std;
 
 string operation;
 int last_instant, process_count;
-vector<string> algorithms;
+vector<pair<char, int>> algorithms;
 vector<tuple<string,int,int>> processes;
 vector<vector<char>>timeline;
 unordered_map<string,int>processToIndex;
@@ -30,8 +30,13 @@ void parse_algorithms(string algorithm_chunk)
     while (stream.good())
     {
         string temp_str;
-        getline(stream, temp_str, '-');
-        algorithms.push_back(temp_str);
+        getline(stream, temp_str, ',');
+        stringstream ss(temp_str);
+        getline(ss, temp_str, '-');
+        char algorithm_id = temp_str[0];
+        getline(ss, temp_str, '-');
+        int quantum = temp_str.size() >= 1 ? stoi(temp_str) : -1;
+        algorithms.push_back( make_pair(algorithm_id, quantum) );
     }
 }
 

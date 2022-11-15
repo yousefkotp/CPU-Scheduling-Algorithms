@@ -1,19 +1,9 @@
 #include <bits/stdc++.h>
 #include "parser.h"
 
-#define all(v) v.begin(),v.end()
+#define all(v) v.begin(), v.end()
 
 using namespace std;
-
-
-class Process {
-    public:
-        string name;
-        int service_time;
-        int arrival_time;
-        double response_ratio;
-};
-
 
 /** Global Constants **/
 const string TRACE = "trace";
@@ -29,10 +19,16 @@ bool sortByArrivalTime(const tuple<string, int, int> &a, const tuple<string, int
     return (get<1>(a) < get<1>(b));
 }
 
-
 bool descendingly_by_response_ratio(tuple<string, double, int> a, tuple<string, double, int> b)
 {
     return get<1>(a) > get<1>(b);
+}
+
+void clear_timeline()
+{
+    for(int i=0; i<last_instant; i++)
+        for(int j=0; j<process_count; j++)
+            timeline[i][j] = ' ';
 }
 
 string getProcessName(tuple<string, int, int> &a)
@@ -76,9 +72,8 @@ void firstComeFirstServe()
     }
 }
 
-void roundRobin(){
-    int originalQuantum = stoi(algorithms[1]);
-
+void roundRobin(int quantum)
+{
 }
 
 void shortestProcessNext()
@@ -177,18 +172,18 @@ double calculate_response_ratio(int wait_time, int service_time)
 void highestResponseRatioNext()
 {
     // Vector of tuple <process_name, process_response_ratio, time_in_service> for processes that are in the ready queue
-    vector< tuple<string, double, int> > present_processes;
+    vector<tuple<string, double, int>> present_processes;
     for (int current_instant = 0; current_instant < last_instant; current_instant++)
     {
-        for(auto proc : processes)
+        for (auto proc : processes)
         {
             // If current_instant == process_arrival_time: response ratio = 1.0 as wait time == 0.
-            if( getArrivalTime(proc) == current_instant )
-                present_processes.push_back( make_tuple(getProcessName(proc), 1.0, 0) );
+            if (getArrivalTime(proc) == current_instant)
+                present_processes.push_back(make_tuple(getProcessName(proc), 1.0, 0));
         }
 
         // Calculate response ratio for every process
-        for(auto &proc : present_processes)
+        for (auto &proc : present_processes)
         {
             string process_name = get<0>(proc);
             int time__in__service = get<2>(proc);
@@ -202,9 +197,9 @@ void highestResponseRatioNext()
         // Sort present processes by highest to lowest response ratio
         sort(all(present_processes), descendingly_by_response_ratio);
 
-        if( !present_processes.empty() )
+        if (!present_processes.empty())
         {
-            for(int i = 1; i < (int)present_processes.size(); i++)
+            for (int i = 1; i < (int)present_processes.size(); i++)
             {
                 int process_index = processToIndex[get<0>(present_processes[i])];
                 timeline[current_instant][process_index] = '.';
@@ -212,9 +207,9 @@ void highestResponseRatioNext()
 
             int process_index = processToIndex[get<0>(present_processes[0])];
             timeline[current_instant][process_index] = '*';
-            get<2>(present_processes[0]) ++;    // Increment time_in_service
+            get<2>(present_processes[0])++; // Increment time_in_service
 
-            if( get<2>(present_processes[0]) == getServiceTime(processes[process_index]) )
+            if (get<2>(present_processes[0]) == getServiceTime(processes[process_index]))
             {
                 swap(present_processes[0], present_processes[present_processes.size() - 1]);
                 present_processes.pop_back();
@@ -234,9 +229,14 @@ void feedbackQ2i()
 {
 }
 
-void printAlgorithm()
+void aging()
 {
-    cout << ALGORITHMS[stoi(algorithms[0])] << endl;
+}
+
+void printAlgorithm(int algorithm_index)
+{
+    int algorithm_id = algorithms[algorithm_index].first - '0';
+    cout << ALGORITHMS[algorithm_id] << endl;
 }
 
 void printProcesses()
@@ -294,9 +294,9 @@ void printNormTurn()
 
     cout << "| " << (1.0 * sum / normTurn.size()) << "|" << endl;
 }
-void printStats()
+void printStats(int algorithm_index)
 {
-    printAlgorithm();
+    printAlgorithm(algorithm_index);
     printProcesses();
     printArrivalTime();
     printServiceTime();
@@ -305,9 +305,10 @@ void printStats()
     printNormTurn();
 }
 
-void printTimeline()
+void printTimeline(int algorithm_index)
 {
-    cout << ALGORITHMS[stoi(algorithms[0])] << " ";
+    int algorithm_id = algorithms[algorithm_index].first - '0';
+    cout << ALGORITHMS[algorithm_id] << " ";
     for (int i = 0; i <= last_instant; i++)
         cout << " " << i % 10;
     cout << endl;
@@ -321,19 +322,55 @@ void printTimeline()
         }
         cout << "|" << endl;
     }
-
     cout << "------------------------------------------------" << endl;
+}
+
+void execute_algorithm(char algorithm_id, int quantum)
+{
+    switch (algorithm_id)
+    {
+    case '1':
+        firstComeFirstServe();
+        break;
+    case '2':
+        roundRobin(quantum);
+        break;
+    case '3':
+        shortestProcessNext();
+        break;
+    case '4':
+        shortestRemainingTime();
+        break;
+    case '5':
+        highestResponseRatioNext();
+        break;
+    case '6':
+        feedbackQ1();
+        break;
+    case '7':
+        feedbackQ2i();
+        break;
+    case '8':
+        aging();
+        break;
+    default:
+        break;
+    }
 }
 
 int main()
 {
-    freopen("input.txt","r",stdin);
+    //freopen("input.txt", "r", stdin);
     parse();
-
-    roundRobin();
-    if(operation == TRACE)
-        printTimeline();
-    else if(operation == SHOW_STATISTICS)
-        printStats();
+    for (int idx = 0; idx < (int)algorithms.size(); idx++)
+    {
+        clear_timeline();
+        execute_algorithm(algorithms[idx].first, algorithms[idx].second);
+        if (operation == TRACE)
+            printTimeline(idx);
+        else if (operation == SHOW_STATISTICS)
+            printStats(idx);
+        cout << endl;
+    }
     return 0;
 }
