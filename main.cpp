@@ -8,7 +8,7 @@ using namespace std;
 /** Global Constants **/
 const string TRACE = "trace";
 const string SHOW_STATISTICS = "stats";
-const string ALGORITHMS[9] = {"", "FCFS", "RR", "SPN", "SRT", "HRRN", "FB-1", "FB-2i", "AGING"};
+const string ALGORITHMS[9] = {"", "FCFS", "RR-", "SPN", "SRT", "HRRN", "FB-1", "FB-2i", "AGING"};
 
 bool sortByServiceTime(const tuple<string, int, int> &a, const tuple<string, int, int> &b)
 {
@@ -45,10 +45,7 @@ int getServiceTime(tuple<string, int, int> &a)
 {
     return get<2>(a);
 }
-void decrementServiceTime(tuple<string, int, int> &a)
-{
-    get<2>(a) = get<2>(a) - 1;
-}
+
 
 void firstComeFirstServe()
 {
@@ -72,8 +69,64 @@ void firstComeFirstServe()
     }
 }
 
-void roundRobin(int quantum)
+void roundRobin(int originalQuantum)
 {
+    queue<pair<int,int>>q;
+    int j=0;
+    if(getArrivalTime(processes[j])==0){
+        q.push(make_pair(j,getServiceTime(processes[j])));
+        j++;
+    }
+    int currentQuantum = originalQuantum;
+    for(int time =0;time<last_instant;time++){
+        if(!q.empty()){
+            int processIndex = q.front().first;
+            q.front().second = q.front().second-1;
+            int remainingServiceTime = q.front().second;
+            int arrivalTime = getArrivalTime(processes[processIndex]);
+            int serviceTime = getServiceTime(processes[processIndex]);
+            currentQuantum--;
+            timeline[time][processIndex]='*';
+            while(j<process_count && getArrivalTime(processes[j])==time+1){
+                q.push(make_pair(j,getServiceTime(processes[j])));
+                j++;
+            }
+
+            if(currentQuantum==0 && remainingServiceTime==0){
+                finishTime[processIndex]=time+1;
+                turnAroundTime[processIndex] = (finishTime[processIndex] - arrivalTime);
+                normTurn[processIndex] = (turnAroundTime[processIndex] * 1.0 / serviceTime);
+                currentQuantum=originalQuantum;
+                q.pop();
+            }else if(currentQuantum==0 && remainingServiceTime!=0){
+                q.pop();
+                q.push(make_pair(processIndex,remainingServiceTime));
+                currentQuantum=originalQuantum;
+            }else if(currentQuantum!=0 && remainingServiceTime==0){
+                finishTime[processIndex]=time+1;
+                turnAroundTime[processIndex] = (finishTime[processIndex] - arrivalTime);
+                normTurn[processIndex] = (turnAroundTime[processIndex] * 1.0 / serviceTime);
+                q.pop();
+                currentQuantum=originalQuantum;
+            }
+        }else{
+            while(j<process_count && getArrivalTime(processes[j])==time+1){
+                q.push(make_pair(j,getServiceTime(processes[j])));
+                j++;
+            }
+
+        }
+    }
+    for (int i = 0; i < process_count; i++)
+    {
+        int arrivalTime = getArrivalTime(processes[i]);
+        for (int k = arrivalTime; k < finishTime[i]; k++)
+        {
+            if (timeline[k][i] != '*')
+                timeline[k][i] = '.';
+        }
+    }
+
 }
 
 void shortestProcessNext()
@@ -236,63 +289,67 @@ void aging()
 void printAlgorithm(int algorithm_index)
 {
     int algorithm_id = algorithms[algorithm_index].first - '0';
-    cout << ALGORITHMS[algorithm_id] << endl;
+    if(algorithm_id==2)
+        cout << ALGORITHMS[algorithm_id] <<algorithms[algorithm_index].second <<endl;
+    else
+        cout << ALGORITHMS[algorithm_id] << endl;
 }
 
 void printProcesses()
 {
     cout << "Process    ";
     for (int i = 0; i < process_count; i++)
-        cout << "| " << getProcessName(processes[i]) << " ";
+        cout << "|  " << getProcessName(processes[i]) << "  ";
     cout << "|" << endl;
 }
 void printArrivalTime()
 {
-    cout << "Arrival    ";
+    cout << "Arrival    |";
     for (int i = 0; i < process_count; i++)
-        cout << "| " << getArrivalTime(processes[i]) << " ";
-
-    cout << "|" << endl;
+        printf(" %2d  |",getArrivalTime(processes[i]));
+    cout<<endl;
 }
 void printServiceTime()
 {
-    cout << "Service    ";
+    cout << "Service    |";
     for (int i = 0; i < process_count; i++)
-        cout << "| " << getServiceTime(processes[i]) << " ";
-    cout << "| Mean|" << endl;
+        printf(" %2d  |",getServiceTime(processes[i]));
+    cout << " Mean|" << endl;
 }
 void printFinishTime()
 {
-    cout << "Finish     ";
+    cout << "Finish     |";
     for (int i = 0; i < process_count; i++)
-        cout << "| " << finishTime[i] << " ";
-    cout << "|-----|" << endl;
+        printf(" %2d  |",finishTime[i]);
+    cout << "-----|" << endl;
 }
 void printTurnAroundTime()
 {
-    cout << "Turnaround ";
+    cout << "Turnaround |";
     int sum = 0;
     for (int i = 0; i < process_count; i++)
     {
-        cout << "| " << turnAroundTime[i] << " ";
+        printf(" %2d  |",turnAroundTime[i]);
         sum += turnAroundTime[i];
     }
     cout << fixed << setprecision(2);
-    cout << "| " << (1.0 * sum / turnAroundTime.size()) << "|" << endl;
+    printf(" %2.2f|",(1.0 * sum / turnAroundTime.size()));
+    cout<<endl;
 }
 
 void printNormTurn()
 {
-    cout << "NormTurn   ";
+    cout << "NormTurn   |";
     cout << fixed << setprecision(2);
     float sum = 0;
     for (int i = 0; i < process_count; i++)
     {
-        cout << "| " << normTurn[i] << " ";
+        printf(" %2.2f|",normTurn[i]);
         sum += normTurn[i];
     }
 
-    cout << "| " << (1.0 * sum / normTurn.size()) << "|" << endl;
+    printf(" %2.2f|",(1.0 * sum / normTurn.size()));
+    cout<<endl;
 }
 void printStats(int algorithm_index)
 {
@@ -308,21 +365,24 @@ void printStats(int algorithm_index)
 void printTimeline(int algorithm_index)
 {
     int algorithm_id = algorithms[algorithm_index].first - '0';
-    cout << ALGORITHMS[algorithm_id] << " ";
+    if(algorithm_id==2)
+        cout << ALGORITHMS[algorithm_id] <<algorithms[algorithm_index].second<<" ";
+    else
+        cout << ALGORITHMS[algorithm_id] << " ";
     for (int i = 0; i <= last_instant; i++)
         cout << " " << i % 10;
-    cout << endl;
-    cout << "------------------------------------------------" << endl;
+    cout <<" "<<'\n';
+    cout << "------------------------------------------------" << '\n';
     for (int i = 0; i < process_count; i++)
     {
-        cout << getProcessName(processes[i]) << "\t\b\b";
+        cout << getProcessName(processes[i]) << "     ";
         for (int j = 0; j < last_instant; j++)
         {
             cout << "|" << timeline[j][i];
         }
-        cout << "|" << endl;
+        cout << "| " << '\n';
     }
-    cout << "------------------------------------------------" << endl;
+    cout << "------------------------------------------------" << '\n';
 }
 
 void execute_algorithm(char algorithm_id, int quantum)
@@ -360,7 +420,8 @@ void execute_algorithm(char algorithm_id, int quantum)
 
 int main()
 {
-    //freopen("input.txt", "r", stdin);
+    freopen("input.txt", "r", stdin);
+    freopen("output.txt","w",stdout);
     parse();
     for (int idx = 0; idx < (int)algorithms.size(); idx++)
     {
@@ -370,7 +431,7 @@ int main()
             printTimeline(idx);
         else if (operation == SHOW_STATISTICS)
             printStats(idx);
-        cout << endl;
+        cout << "\n";
     }
     return 0;
 }
