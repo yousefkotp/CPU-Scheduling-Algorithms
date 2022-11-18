@@ -291,6 +291,11 @@ void feedbackQ1()
             int arrivalTime = getArrivalTime(processes[processIndex]);
             int serviceTime = getServiceTime(processes[processIndex]);
             pq.pop();
+            while(j<process_count && getArrivalTime(processes[j])==time+1){
+                    pq.push(make_pair(0,j));
+                    remainingServiceTime[j]=getServiceTime(processes[j]);
+                    j++;
+            }
             remainingServiceTime[processIndex]--;
             timeline[time][processIndex]='*';
             if(remainingServiceTime[processIndex]==0){
@@ -298,11 +303,6 @@ void feedbackQ1()
                 turnAroundTime[processIndex] = (finishTime[processIndex] - arrivalTime);
                 normTurn[processIndex] = (turnAroundTime[processIndex] * 1.0 / serviceTime);
             }else{
-                while(j<process_count && getArrivalTime(processes[j])==time+1){
-                    pq.push(make_pair(0,j));
-                    remainingServiceTime[j]=getServiceTime(processes[j]);
-                    j++;
-                }
                 if(pq.size()>=1)
                     pq.push(make_pair(priorityLevel+1,processIndex));
                 else
@@ -330,10 +330,68 @@ void feedbackQ1()
 
 void feedbackQ2i()
 {
+    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq; //pair of priority level and process index
+    unordered_map<int,int>remainingServiceTime; //map from process index to the remaining service time
+    int j=0;
+    if(getArrivalTime(processes[0])==0){
+        pq.push(make_pair(0,j));
+        remainingServiceTime[j]=getServiceTime(processes[j]);
+        j++;
+    }
+    for(int time =0;time<last_instant;time++){
+        if(!pq.empty()){
+            int priorityLevel = pq.top().first;
+            int processIndex =pq.top().second;
+            int arrivalTime = getArrivalTime(processes[processIndex]);
+            int serviceTime = getServiceTime(processes[processIndex]);
+            pq.pop();
+            while(j<process_count && getArrivalTime(processes[j])<=time+1){
+                    pq.push(make_pair(0,j));
+                    remainingServiceTime[j]=getServiceTime(processes[j]);
+                    j++;
+            }
+
+            int currentQuantum = pow(2,priorityLevel);
+            int temp = time;
+            while(currentQuantum && remainingServiceTime[processIndex]){
+                currentQuantum--;
+                remainingServiceTime[processIndex]--;
+                timeline[temp++][processIndex]='*';
+            }
+
+            if(remainingServiceTime[processIndex]==0){
+                finishTime[processIndex]=temp;
+                turnAroundTime[processIndex] = (finishTime[processIndex] - arrivalTime);
+                normTurn[processIndex] = (turnAroundTime[processIndex] * 1.0 / serviceTime);
+            }else{
+                if(pq.size()>=1)
+                    pq.push(make_pair(priorityLevel+1,processIndex));
+                else
+                    pq.push(make_pair(priorityLevel,processIndex));
+            }
+            time = temp-1;
+        }
+        while(j<process_count && getArrivalTime(processes[j])<=time+1){
+                pq.push(make_pair(0,j));
+                remainingServiceTime[j]=getServiceTime(processes[j]);
+                j++;
+        }
+    }
+    for (int i = 0; i < process_count; i++)
+    {
+        int arrivalTime = getArrivalTime(processes[i]);
+        for (int k = arrivalTime; k < finishTime[i]; k++)
+        {
+            if (timeline[k][i] != '*')
+                timeline[k][i] = '.';
+        }
+    }
+
 }
 
 void aging()
 {
+
 }
 
 void printAlgorithm(int algorithm_index)
