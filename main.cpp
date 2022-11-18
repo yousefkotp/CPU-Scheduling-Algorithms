@@ -300,56 +300,52 @@ void printProcesses()
     cout << "Process    ";
     for (int i = 0; i < process_count; i++)
         cout << "|  " << getProcessName(processes[i]) << "  ";
-    cout << "|" << endl;
+    cout << "|\n";
 }
 void printArrivalTime()
 {
-    cout << "Arrival    |";
+    cout << "Arrival    ";
     for (int i = 0; i < process_count; i++)
-        printf(" %2d  |",getArrivalTime(processes[i]));
-    cout<<endl;
+        printf("|%3d  ",getArrivalTime(processes[i]));
+    cout<<"|\n";
 }
 void printServiceTime()
 {
-    cout << "Service    |";
+    cout << "Service    ";
     for (int i = 0; i < process_count; i++)
-        printf(" %2d  |",getServiceTime(processes[i]));
-    cout << " Mean|" << endl;
+        printf("|%3d  |",getServiceTime(processes[i]));
+    cout << " Mean|\n";
 }
 void printFinishTime()
 {
-    cout << "Finish     |";
+    cout << "Finish     ";
     for (int i = 0; i < process_count; i++)
-        printf(" %2d  |",finishTime[i]);
-    cout << "-----|" << endl;
+        printf("|%3d  ",finishTime[i]);
+    cout << "|-----|\n";
 }
 void printTurnAroundTime()
 {
-    cout << "Turnaround |";
+    cout << "Turnaround ";
     int sum = 0;
     for (int i = 0; i < process_count; i++)
     {
-        printf(" %2d  |",turnAroundTime[i]);
+        printf("|%3d  |",turnAroundTime[i]);
         sum += turnAroundTime[i];
     }
-    cout << fixed << setprecision(2);
-    printf(" %2.2f|",(1.0 * sum / turnAroundTime.size()));
-    cout<<endl;
+    printf(" %2.2f|\n",(1.0 * sum / turnAroundTime.size()));
 }
 
 void printNormTurn()
 {
-    cout << "NormTurn   |";
-    cout << fixed << setprecision(2);
+    cout << "NormTurn   ";
     float sum = 0;
     for (int i = 0; i < process_count; i++)
     {
-        printf(" %2.2f|",normTurn[i]);
+        printf("| %2.2f|",normTurn[i]);
         sum += normTurn[i];
     }
 
-    printf(" %2.2f|",(1.0 * sum / normTurn.size()));
-    cout<<endl;
+    printf("| %2.2f|\n",(1.0 * sum / normTurn.size()));
 }
 void printStats(int algorithm_index)
 {
@@ -371,18 +367,18 @@ void printTimeline(int algorithm_index)
         cout << ALGORITHMS[algorithm_id] << " ";
     for (int i = 0; i <= last_instant; i++)
         cout << " " << i % 10;
-    cout <<" "<<'\n';
-    cout << "------------------------------------------------" << '\n';
+    cout <<" \n";
+    cout << "------------------------------------------------\n";
     for (int i = 0; i < process_count; i++)
     {
-        cout << getProcessName(processes[i]) << "     ";
+        cout << getProcessName(processes[i]) << "     |";
         for (int j = 0; j < last_instant; j++)
         {
-            cout << "|" << timeline[j][i];
+            cout << timeline[j][i]<<"|";
         }
-        cout << "| " << '\n';
+        cout << " \n";
     }
-    cout << "------------------------------------------------" << '\n';
+    cout << "------------------------------------------------\n";
 }
 
 void execute_algorithm(char algorithm_id, int quantum)
