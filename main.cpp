@@ -394,15 +394,6 @@ void aging()
 
 }
 
-void printAlgorithm(int algorithm_index)
-{
-    int algorithm_id = algorithms[algorithm_index].first - '0';
-    if(algorithm_id==2)
-        cout << ALGORITHMS[algorithm_id] <<algorithms[algorithm_index].second <<endl;
-    else
-        cout << ALGORITHMS[algorithm_id] << endl;
-}
-
 void printProcesses()
 {
     cout << "Process    ";
@@ -466,7 +457,7 @@ void printNormTurn()
 }
 void printStats(int algorithm_index)
 {
-    printAlgorithm(algorithm_index);
+    cout<<endl;
     printProcesses();
     printArrivalTime();
     printServiceTime();
@@ -477,14 +468,9 @@ void printStats(int algorithm_index)
 
 void printTimeline(int algorithm_index)
 {
-    int algorithm_id = algorithms[algorithm_index].first - '0';
-    if(algorithm_id==2)
-        cout << ALGORITHMS[algorithm_id] <<algorithms[algorithm_index].second<<" ";
-    else
-        cout << ALGORITHMS[algorithm_id] << " ";
     for (int i = 0; i <= last_instant; i++)
-        cout << " " << i % 10;
-    cout <<" \n";
+        cout << i % 10<<" ";
+    cout <<"\n";
     cout << "------------------------------------------------\n";
     for (int i = 0; i < process_count; i++)
     {
@@ -503,24 +489,31 @@ void execute_algorithm(char algorithm_id, int quantum)
     switch (algorithm_id)
     {
     case '1':
+        cout<<"FCFS  ";
         firstComeFirstServe();
         break;
     case '2':
+        cout<<"RR-"<<quantum<<" ";
         roundRobin(quantum);
         break;
     case '3':
+        cout<<"SPN   ";
         shortestProcessNext();
         break;
     case '4':
+        cout<<"SRT   ";
         shortestRemainingTime();
         break;
     case '5':
+        cout<<"HRRN  ";
         highestResponseRatioNext();
         break;
     case '6':
+        cout<<"FB-1  ";
         feedbackQ1();
         break;
     case '7':
+        cout<<"FB-2i ";
         feedbackQ2i();
         break;
     case '8':
