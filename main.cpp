@@ -230,31 +230,28 @@ void shortestRemainingTime()
 
 double calculate_response_ratio(int wait_time, int service_time)
 {
-    return (wait_time + service_time) / service_time;
+    return (wait_time + service_time)*1.0 / service_time;
 }
 
 void highestResponseRatioNext()
 {
+
     // Vector of tuple <process_name, process_response_ratio, time_in_service> for processes that are in the ready queue
     vector<tuple<string, double, int>> present_processes;
+    int j=0;
     for (int current_instant = 0; current_instant < last_instant; current_instant++)
     {
-        for (auto proc : processes)
-        {
-            // If current_instant == process_arrival_time: response ratio = 1.0 as wait time == 0.
-            if (getArrivalTime(proc) == current_instant)
-                present_processes.push_back(make_tuple(getProcessName(proc), 1.0, 0));
+        while(j<process_count && getArrivalTime(processes[j])<=current_instant){
+            present_processes.push_back(make_tuple(getProcessName(processes[j]), 1.0, 0));
+            j++;
         }
-
         // Calculate response ratio for every process
         for (auto &proc : present_processes)
         {
             string process_name = get<0>(proc);
-            int time__in__service = get<2>(proc);
             int process_index = processToIndex[process_name];
-            int wait_time = current_instant - getArrivalTime(processes[process_index]) + time__in__service;
+            int wait_time = current_instant - getArrivalTime(processes[process_index]);
             int service_time = getServiceTime(processes[process_index]);
-
             get<1>(proc) = calculate_response_ratio(wait_time, service_time);
         }
 
@@ -263,24 +260,26 @@ void highestResponseRatioNext()
 
         if (!present_processes.empty())
         {
-            for (int i = 1; i < (int)present_processes.size(); i++)
-            {
-                int process_index = processToIndex[get<0>(present_processes[i])];
-                timeline[current_instant][process_index] = '.';
-            }
-
             int process_index = processToIndex[get<0>(present_processes[0])];
-            timeline[current_instant][process_index] = '*';
-            get<2>(present_processes[0])++; // Increment time_in_service
-
-            if (get<2>(present_processes[0]) == getServiceTime(processes[process_index]))
-            {
-                swap(present_processes[0], present_processes[present_processes.size() - 1]);
-                present_processes.pop_back();
-                finishTime[process_index] = current_instant + 1;
-                turnAroundTime[process_index] = finishTime[process_index] - getArrivalTime(processes[process_index]);
-                normTurn[process_index] = (turnAroundTime[process_index] * 1.0 / getServiceTime(processes[process_index]));
+            while(current_instant<last_instant && get<2>(present_processes[0]) != getServiceTime(processes[process_index])){
+                timeline[current_instant][process_index]='*';
+                current_instant++;
+                get<2>(present_processes[0])++;
             }
+            current_instant--;
+            present_processes.erase(present_processes.begin());
+            finishTime[process_index] = current_instant + 1;
+            turnAroundTime[process_index] = finishTime[process_index] - getArrivalTime(processes[process_index]);
+            normTurn[process_index] = (turnAroundTime[process_index] * 1.0 / getServiceTime(processes[process_index]));
+        }
+    }
+    for (int i = 0; i < process_count; i++)
+    {
+        int arrivalTime = getArrivalTime(processes[i]);
+        for (int k = arrivalTime; k < finishTime[i]; k++)
+        {
+            if (timeline[k][i] != '*')
+                timeline[k][i] = '.';
         }
     }
 }
