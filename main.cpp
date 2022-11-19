@@ -420,11 +420,16 @@ void aging(int originalQuantum)
                 get<0>(v[i])++;
                 get<2>(v[i])++;
             }
-
         }
         sort(v.begin(),v.end(),byPriorityLevel);
         currentProcess=get<1>(v[0]);
-        timeline[time][currentProcess]='*';
+        int currentQuantum = originalQuantum;
+        while(currentQuantum-- && time<last_instant){
+            timeline[time][currentProcess]='*';
+            time++;
+        }
+
+        time--;
     }
 
 
