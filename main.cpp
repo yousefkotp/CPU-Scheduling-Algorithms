@@ -551,7 +551,7 @@ void execute_algorithm(char algorithm_id, int quantum,string operation)
         firstComeFirstServe();
         break;
     case '2':
-        if(operation==TRACE)cout<<"RR-"<<quantum<<" ";
+        if(operation==TRACE)cout<<"RR-"<<quantum<<"  ";
         roundRobin(quantum);
         break;
     case '3':
