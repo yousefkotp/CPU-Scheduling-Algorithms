@@ -135,12 +135,10 @@ void roundRobin(int originalQuantum)
                 q.pop();
                 currentQuantum=originalQuantum;
             }
-        }else{
-            while(j<process_count && getArrivalTime(processes[j])==time+1){
-                q.push(make_pair(j,getServiceTime(processes[j])));
-                j++;
-            }
-
+        }
+        while(j<process_count && getArrivalTime(processes[j])==time+1){
+            q.push(make_pair(j,getServiceTime(processes[j])));
+            j++;
         }
     }
     fillInWaitTime();
