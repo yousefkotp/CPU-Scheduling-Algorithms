@@ -57,14 +57,29 @@ int getPriorityLevel(tuple<string, int, int> &a)
     return get<2>(a);
 }
 
+double calculate_response_ratio(int wait_time, int service_time)
+{
+    return (wait_time + service_time)*1.0 / service_time;
+}
+
+void fillInWaitTime(){
+    for (int i = 0; i < process_count; i++)
+    {
+        int arrivalTime = getArrivalTime(processes[i]);
+        for (int k = arrivalTime; k < finishTime[i]; k++)
+        {
+            if (timeline[k][i] != '*')
+                timeline[k][i] = '.';
+        }
+    }
+}
 
 void firstComeFirstServe()
 {
     int time = getArrivalTime(processes[0]);
     for (int i = 0; i < process_count; i++)
     {
-        string processName = getProcessName(processes[i]);
-        int processIndex = processToIndex[processName];
+        int processIndex = i;
         int arrivalTime = getArrivalTime(processes[i]);
         int serviceTime = getServiceTime(processes[i]);
 
@@ -128,16 +143,7 @@ void roundRobin(int originalQuantum)
 
         }
     }
-    for (int i = 0; i < process_count; i++)
-    {
-        int arrivalTime = getArrivalTime(processes[i]);
-        for (int k = arrivalTime; k < finishTime[i]; k++)
-        {
-            if (timeline[k][i] != '*')
-                timeline[k][i] = '.';
-        }
-    }
-
+    fillInWaitTime();
 }
 
 void shortestProcessNext()
@@ -146,15 +152,9 @@ void shortestProcessNext()
     int j = 0;
     for (int i = 0; i < last_instant; i++)
     {
-        for (; j < process_count;)
-        {
-            if (getArrivalTime(processes[j]) <= i)
-            {
-                pq.push(make_pair(getServiceTime(processes[j]), j));
-                j++;
-            }
-            else
-                break;
+        while(j<process_count && getArrivalTime(processes[j]) <= i){
+            pq.push(make_pair(getServiceTime(processes[j]), j));
+            j++;
         }
         if (!pq.empty())
         {
@@ -185,15 +185,9 @@ void shortestRemainingTime()
     int j = 0;
     for (int i = 0; i < last_instant; i++)
     {
-        for (; j < process_count;)
-        {
-            if (getArrivalTime(processes[j]) == i)
-            {
-                pq.push(make_pair(getServiceTime(processes[j]), j));
-                j++;
-            }
-            else
-                break;
+        while(j<process_count &&getArrivalTime(processes[j]) == i){
+            pq.push(make_pair(getServiceTime(processes[j]), j));
+            j++;
         }
         if (!pq.empty())
         {
@@ -216,21 +210,7 @@ void shortestRemainingTime()
             }
         }
     }
-
-    for (int i = 0; i < process_count; i++)
-    {
-        int arrivalTime = getArrivalTime(processes[i]);
-        for (int k = arrivalTime; k < finishTime[i]; k++)
-        {
-            if (timeline[k][i] != '*')
-                timeline[k][i] = '.';
-        }
-    }
-}
-
-double calculate_response_ratio(int wait_time, int service_time)
-{
-    return (wait_time + service_time)*1.0 / service_time;
+    fillInWaitTime();
 }
 
 void highestResponseRatioNext()
@@ -273,15 +253,7 @@ void highestResponseRatioNext()
             normTurn[process_index] = (turnAroundTime[process_index] * 1.0 / getServiceTime(processes[process_index]));
         }
     }
-    for (int i = 0; i < process_count; i++)
-    {
-        int arrivalTime = getArrivalTime(processes[i]);
-        for (int k = arrivalTime; k < finishTime[i]; k++)
-        {
-            if (timeline[k][i] != '*')
-                timeline[k][i] = '.';
-        }
-    }
+    fillInWaitTime();
 }
 
 void feedbackQ1()
@@ -325,17 +297,7 @@ void feedbackQ1()
                 j++;
         }
     }
-
-    for (int i = 0; i < process_count; i++)
-    {
-        int arrivalTime = getArrivalTime(processes[i]);
-        for (int k = arrivalTime; k < finishTime[i]; k++)
-        {
-            if (timeline[k][i] != '*')
-                timeline[k][i] = '.';
-        }
-    }
-
+    fillInWaitTime();
 }
 
 void feedbackQ2i()
@@ -387,23 +349,13 @@ void feedbackQ2i()
                 j++;
         }
     }
-    for (int i = 0; i < process_count; i++)
-    {
-        int arrivalTime = getArrivalTime(processes[i]);
-        for (int k = arrivalTime; k < finishTime[i]; k++)
-        {
-            if (timeline[k][i] != '*')
-                timeline[k][i] = '.';
-        }
-    }
-
+    fillInWaitTime();
 }
 
 void aging(int originalQuantum)
 {
-    vector<tuple<int,int,int>>v; //pair of priority level and index
-    int j=0;
-    int currentProcess=-1;
+    vector<tuple<int,int,int>>v; //tuple of priority level, process index and total waiting time
+    int j=0,currentProcess=-1;
     for(int time =0;time<last_instant;time++){
         while(j<process_count && getArrivalTime(processes[j])<=time){
             v.push_back(make_tuple(getPriorityLevel(processes[j]),j,0));
@@ -429,17 +381,7 @@ void aging(int originalQuantum)
         }
         time--;
     }
-
-
-    for (int i = 0; i < process_count; i++)
-    {
-        int arrivalTime = getArrivalTime(processes[i]);
-        for (int k = arrivalTime; k < last_instant; k++)
-        {
-            if (timeline[k][i] != '*')
-                timeline[k][i] = '.';
-        }
-    }
+    fillInWaitTime();
 }
 
 void printAlgorithm(int algorithm_index)
