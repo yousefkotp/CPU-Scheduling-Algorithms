@@ -84,9 +84,9 @@ process can be passed over by the scheduler only a finite number of times before
 
 - Each process has an initial priority that is assigned to it at process creation. Every time the scheduler is called it takes
 the following steps.
-    - The priority of the current process is set to the initial priority assigned to it.\
-    - The priorities of all the ready processes (not the current process) are incremented by 1.\
-    - The scheduler choses the highest priority process from among all the eligible processes.\
+    - The priority of the current process is set to the initial priority assigned to it.
+    - The priorities of all the ready processes (not the current process) are incremented by 1.
+    - The scheduler choses the highest priority process from among all the eligible processes.
 
 - Note that during each call to the scheduler, the complete ready list has to be traversed.
 ## Installation
