@@ -1,8 +1,0 @@
-FB-1
-Process    |  A  |  B  |  C  |  D  |  E  |
-Arrival    |  0  |  2  |  4  |  6  |  8  |
-Service    |  3  |  6  |  4  |  5  |  2  | Mean|
-Finish     |  4  | 20  | 16  | 19  | 11  |-----|
-Turnaround |  4  | 18  | 12  | 13  |  3  |10.00|
-NormTurn   | 1.33| 3.00| 3.00| 2.60| 1.50| 2.29|
-

@@ -1,8 +1,0 @@
-RR-2
-Process    |  A  |  B  |  C  |  D  |  E  |
-Arrival    |  0  |  2  |  4  |  6  |  8  |
-Service    |  3  |  6  |  4  |  5  |  2  | Mean|
-Finish     |  5  | 17  | 13  | 20  | 15  |-----|
-Turnaround |  5  | 15  |  9  | 14  |  7  |10.00|
-NormTurn   | 1.67| 2.50| 2.25| 2.80| 3.50| 2.54|
-

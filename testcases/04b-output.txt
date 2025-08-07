@@ -1,8 +1,0 @@
-SPN
-Process    |  A  |  B  |  C  |  D  |  E  |
-Arrival    |  0  |  2  |  4  |  6  |  8  |
-Service    |  3  |  6  |  4  |  5  |  2  | Mean|
-Finish     |  3  |  9  | 15  | 20  | 11  |-----|
-Turnaround |  3  |  7  | 11  | 14  |  3  | 7.60|
-NormTurn   | 1.00| 1.17| 2.75| 2.80| 1.50| 1.84|
-
