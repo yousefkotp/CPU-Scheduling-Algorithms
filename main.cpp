@@ -76,6 +76,7 @@ void fillInWaitTime(){
 
 void firstComeFirstServe()
 {
+    sort(processes.begin(),processes.end(),sortByArrivalTime);
     int time = getArrivalTime(processes[0]);
     for (int i = 0; i < process_count; i++)
     {
